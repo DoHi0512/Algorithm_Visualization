@@ -1,13 +1,13 @@
 ﻿#include <bits/stdc++.h>
 #include <Windows.h>
 using namespace std;
-int speed1[4] = { 500,1000,1500,2000 };
+int speed1[4] = { 500,1000,1500,5000};
 int speed;
 void setcolor(unsigned short text, unsigned short back){
 
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), text | (back << 4));
 }
-void Quick(int start, int end, int* arr, int max_num, int n) {
+void Quick(int start, int end, int* arr, int max_num, int n,int compare,int change) {
 	if (start >= end) {
 		return;
 	}
@@ -15,7 +15,34 @@ void Quick(int start, int end, int* arr, int max_num, int n) {
 	int key = start;
 	int i = start + 1, j = end, temp;
 	while (i <= j) {
+		printf("비교 횟수 = %d\n", compare);
+		printf("교환 횟수 = %d\n\n", change);
+		printf("Pivot = %d\n\n", arr[key]);
+		for (int k = max_num - 1; k >= 0; k--) {
+			for (int l = 0; l < n; l++) {
+				if (arr[l] > k) {
+					if (l == key) {
+						setcolor(12, 0);
+						printf("ㅁ");
+						setcolor(15, 0);
+					}
+					else printf("ㅁ");
+				}
+				else printf("  ");
+			}
+			cout << endl;
+		}
+		for (int k = 0; k < n; k++) {
+			if (k == i && k == j) printf("");
+			else if (k == i) printf("L");
+			else if (k == j) printf("H");
+			else printf("  ");
+		}
+		Sleep(speed1[speed - 1]);
+		system("cls");
 		while (i <= end && arr[i] <= arr[key]) {
+			printf("비교 횟수 = %d\n", compare);
+			printf("교환 횟수 = %d\n\n", change);
 			printf("Pivot = %d\n\n", arr[key]);
 			for (int k = max_num - 1; k >= 0; k--) {
 				for (int l = 0; l < n; l++) {
@@ -40,8 +67,11 @@ void Quick(int start, int end, int* arr, int max_num, int n) {
 			Sleep(speed1[speed - 1]);
 			system("cls");
 			i++;
+			compare++;
 		}
 		while (j > start && arr[j] >= arr[key]) {
+			printf("비교 횟수 = %d\n", compare);
+			printf("교환 횟수 = %d\n\n", change);
 			printf("Pivot = %d\n\n", arr[key]);
 			for (int k = max_num - 1; k >= 0; k--) {
 				for (int l = 0; l < n; l++) {
@@ -66,24 +96,41 @@ void Quick(int start, int end, int* arr, int max_num, int n) {
 			Sleep(speed1[speed - 1]);
 			system("cls");
 			j--;
+			compare++;
 		}
 		if (i > j) {
 			temp = arr[j];
 			arr[j] = arr[key];
 			arr[key] = temp;
+			change++;
 		}
 		else {
 			temp = arr[i];
 			arr[i] = arr[j];
 			arr[j] = temp;
+			change++;
 		}
 	}
-	Quick(start, j - 1, arr, max_num, n);
-	Quick(j + 1, end, arr, max_num, n);
+	Quick(start, j - 1, arr, max_num, n,compare,change);
+	Quick(j + 1, end, arr, max_num, n,compare,change);
 
 	
 }
-
+void Push(int* arr, int size, int idx, int data) {
+	arr[idx + 1] = data;
+}
+int Pop(int* arr, int size, int idx) {
+	return arr[idx];
+}
+int Top(int* arr, int size, int idx) {
+	return arr[idx];
+}
+void PrintAll(int* arr, int size, int idx) {
+	for (int i = size ; i > 0; i--) {
+		printf(" |  [%d]  |\n",arr[i]);
+	}
+	printf("  -------- ");
+}
 int RandomArray(int* arr, int size) {
 	int check[21] = {}, max_num = -1;
 	srand(time(NULL));
@@ -126,9 +173,9 @@ void BubbleSort() {
 	printf("------------------\n");
 	cin >> speed;
 	system("cls");
-	printf("red = 기준값\n");
-	printf("green = 비교값\n");
-	printf("gray = 정렬 완료\n");
+	printf("red : 기준값\n");
+	printf("green : 비교값\n");
+	printf("gray : 정렬 완료\n");
 	printf("비교 횟수 = %d\n", compare);
 	printf("교환 횟수 = %d\n\n", change);
 	for (int i = 0; i < n; i++) {
@@ -160,9 +207,9 @@ void BubbleSort() {
 			}
 			Sleep(speed1[speed - 1]);
 			system("cls");
-			printf("red = 기준값\n");
-			printf("green = 비교값\n");
-			printf("gray = 정렬 완료\n");
+			printf("red : 기준값\n");
+			printf("green : 비교값\n");
+			printf("gray : 정렬 완료\n");
 			printf("비교 횟수 = %d\n", compare);
 			if (arr[i] > arr[j]) {
 				change++;
@@ -186,11 +233,57 @@ void BubbleSort() {
 	system("cls");
 	
 }
-void Queue() {
-
-}
 void Stack() {
-
+	int menu = 1, arr[100] = { 0, }, idx = 0,data;
+	while (menu) {
+		printf("------------------\n");
+		printf("| 1 : Push       |\n");
+		printf("| 2 : Pop        |\n");
+		printf("| 3 : Top        |\n");
+		printf("| 4 : Print      |\n");
+		printf("| 0 : Exit       |\n");
+		printf("------------------\n");
+		cin >> menu;
+		system("cls");
+		switch (menu) {
+		case 1:
+			printf("데이터를 입력하세요\n");
+			cin >> data;
+			Push(arr, idx, idx, data);
+			idx++;
+			break;
+		case 2:
+			if (idx == 0) {
+				printf("Stack is empty\n");
+				Sleep(2000);
+				break;
+			}
+			printf("Pop 결과 = %d", Pop(arr, idx, idx));
+			idx--;
+			Sleep(2000);
+			break;
+		case 3:
+			if (idx == 0) {
+				printf("Stack is empty\n");
+				Sleep(2000);
+				break;
+			}
+			printf("Top 결과 = %d", Top(arr, idx, idx));
+			Sleep(2000);
+			break;
+		case 4:
+			if (idx == 0) {
+				printf("Stack is empty\n");
+				Sleep(2000);
+				break;
+			}
+			PrintAll(arr, idx, idx);
+			Sleep(2000);
+			break;
+		}
+		system("cls");
+	}
+	
 }
 void QuickSort() {
 	int menu, n, max_num;
@@ -216,7 +309,7 @@ void QuickSort() {
 	cin >> speed;
 	system("cls");
 
-	Quick(0, n - 1, arr, max_num, n);
+	Quick(0, n - 1, arr, max_num, n,0,0);
 	for (int k = max_num - 1; k >= 0; k--) {
 		for (int l = 0; l < n; l++) {
 			if (arr[l] > k) {
@@ -236,16 +329,14 @@ int main() {
 		printf("------------------\n");
 		printf("| 1 : BubbleSort |\n");
 		printf("| 2 : QuickSort  |\n");
-		printf("| 3 : Stackt     |\n");
-		printf("| 4 : Queue      |\n");
-		printf("| 0 : quit       |\n");
+		printf("| 3 : Stack      |\n");
+		printf("| 0 : Exit       |\n");
 		printf("------------------\n");
 		cin >> menu;
 		system("cls");
 		if (menu == 1) BubbleSort();
 		else if (menu == 2) QuickSort();
 		else if (menu == 3) Stack();
-		else if (menu == 4) Queue();
 		system("cls");
 	}
 	
